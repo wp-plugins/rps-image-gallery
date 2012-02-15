@@ -44,11 +44,9 @@ Nothing bad. The default WordPress gallery behavior will take over and any short
 * caption (default='false') - whether or not to show the caption under the images in the gallery grid view.
 * slideshow (default='true') - whether or not to invoke the fancybox slideshow viewer when an image without a Gallery Link value is clicked.
 
-= Why is the default output for the gallery grid set to use an unordered list rather than a definition list?
+= Why is the default output for the gallery grid set to use an unordered list rather than a definition list? =
 
-The unordered list output is more flexible when used with variable-width layouts since it does not include a break at the end of each row. The default WordPress Gallery output can be achieved by adding the following attributes and values to the shortcode:
-* itemtag='dl'
-* icontag='dt'
+The unordered list output is more flexible when used with variable-width layouts since it does not include a break at the end of each row. The default WordPress Gallery output can be achieved by adding the following attributes and values to the shortcode: itemtag='dl', icontag='dt'
 
 = What will display if I set the caption attribute to 'true' but some of my images don't have captions? =
 
