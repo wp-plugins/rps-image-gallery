@@ -1,5 +1,5 @@
-=== Plugin Name ===
-Contributors: Red Pixel Studios
+=== RPS Image Gallery ===
+Contributors: redpixelstudios
 Donate link: http://redpixel.com/
 Tags: gallery, images, slideshow, fancybox
 Requires at least: 3.0
