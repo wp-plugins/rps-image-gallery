@@ -3,13 +3,13 @@
 Plugin Name: RPS Image Gallery
 Plugin URI: http://redpixel.com/
 Description: An image gallery with caption support and ability to link to a slideshow or alternate URL. 
-Version: 1.1.1
+Version: 1.2
 Author: Red Pixel Studios
 Author URI: http://redpixel.com/
 License: GPL3
 */
 
-/* 	Copyright (C) 2011  Red Pixel Studios  (email : support@redpixel.com)
+/* 	Copyright (C) 2011 - 2012  Red Pixel Studios  (email : support@redpixel.com)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ License: GPL3
  *
  * @package rps-image-gallery
  * @author Red Pixel Studios
- * @version 1.1.1
+ * @version 1.2
  */
 
 /**
@@ -97,7 +97,6 @@ class RPS_Image_Gallery {
 		
 		wp_register_script( 'rps-image-gallery-easing', plugins_url( 'dependencies/fancybox/jquery.easing-1.3.pack.js', __FILE__ ), array( 'jquery' ), '1.0.0', true );
 		wp_register_script( 'rps-image-gallery-fancybox', plugins_url( 'dependencies/fancybox/jquery.fancybox-1.3.4.pack.js', __FILE__ ), array( 'rps-image-gallery-easing' ), '1.0.0', true );
-		wp_register_script( 'rps-image-gallery', plugins_url( 'rps-image-gallery.js', __FILE__ ), array( 'rps-image-gallery-fancybox' ), '1.0.2', true );
 	}
 	
 	public function cb_enqueue_styles_scripts() {
@@ -148,6 +147,31 @@ class RPS_Image_Gallery {
 			'p',
 			'span'
 		);
+		
+		// allowed values for fancybox shortcode attributes
+		$allowed_fb_transition_in = array(
+			'elastic',
+			'fade',
+			'none'
+		);
+		
+		$allowed_fb_transition_out = array(
+			'elastic',
+			'fade',
+			'none'
+		);
+		
+		$allowed_fb_title_position = array(
+			'outside',
+			'inside',
+			'over'
+		);
+		
+		$allowed_fb_speed_in_min = 100;
+		$allowed_fb_speed_in_max = 1000;
+		
+		$allowed_fb_speed_out_min = 100;
+		$allowed_fb_speed_out_max = 1000;
 
 		// specify defaults for shortcode attributes
 		$defaults = array(
@@ -166,10 +190,20 @@ class RPS_Image_Gallery {
 			'caption' => 'false', // false = default
 			'slideshow' => 'true', // false causes link within 'description' or 'gallery link' to be used
 			'include' => '',
-			'exclude' => ''
+			'exclude' => '',
+			
+			// fancybox attributes
+			'fb_title_show' => 'true',
+			'fb_transition_in' => 'none',
+			'fb_transition_out' => 'none',
+			'fb_title_position' => 'over',
+			'fb_speed_in' => 300,
+			'fb_speed_out' => 300,
+			'fb_show_close_button' => 'true'
 		);
 		
-		extract( shortcode_atts( $defaults, $atts ), EXTR_SKIP );
+		$shortcode_atts = shortcode_atts( $defaults, $atts );
+		extract( $shortcode_atts, EXTR_SKIP );
 		
 		// convert string values to lowercase and trim
 		$size = trim( strtolower( $size ) );
@@ -184,12 +218,21 @@ class RPS_Image_Gallery {
 		$container = trim( strtolower( $container ) );
 		$caption = trim( strtolower( $caption ) );
 		$slideshow = trim( strtolower( $slideshow ) );
+		$fb_title_show = trim( strtolower( $fb_title_show ) );
+		$fb_transition_in = trim( strtolower( $fb_transition_in ) );
+		$fb_transition_out = trim( strtolower( $fb_transition_out ) );
+		$fb_title_position = trim( strtolower( $fb_title_position ) );
+		$fb_show_close_button = trim( strtolower( $fb_show_close_button ) );
 		
 		// type cast strings as necessary
 		$id = absint( $id );
 		$columns = absint( $columns );
 		$caption = ( $caption == 'true' ) ? true : false;
 		$slideshow = ( $slideshow == 'true' ) ? true : false;
+		$fb_title_show = ( $fb_title_show == 'true' ) ? true : false;
+		$fb_speed_in = absint( $fb_speed_in );
+		$fb_speed_out = absint( $fb_speed_out );
+		$fb_show_close_button = ( $fb_show_close_button == 'true' ) ? true : false;
 
 		// test for allowed values
 		$columns = max( $allowed_columns_min, min( $allowed_columns_max, $columns ) );
@@ -198,8 +241,13 @@ class RPS_Image_Gallery {
 		if ( !in_array( $itemtag, $allowed_itemtag ) ) $itemtag = $defaults['itemtag'];
 		if ( !in_array( $icontag, $allowed_icontag ) ) $icontag = $defaults['icontag'];
 		if ( !in_array( $captiontag, $allowed_captiontag ) ) $captiontag = $defaults['captiontag'];
-		if ( !in_array( $link, $allowed_link ) ) $captiontag = $defaults['link'];
-		if ( !in_array( $container, $allowed_container ) ) $captiontag = $defaults['container'];
+		if ( !in_array( $link, $allowed_link ) ) $link = $defaults['link'];
+		if ( !in_array( $container, $allowed_container ) ) $container = $defaults['container'];
+		if ( !in_array( $fb_transition_in, $allowed_fb_transition_in ) ) $fb_transition_in = $defaults['fb_transition_in'];
+		if ( !in_array( $fb_transition_out, $allowed_fb_transition_out ) ) $fb_transition_out = $defaults['fb_transition_out'];
+		if ( !in_array( $fb_title_position, $allowed_fb_title_position ) ) $fb_title_position = $defaults['fb_title_position'];
+		$fb_speed_in = max( $allowed_fb_speed_in_min, min( $allowed_fb_speed_in_max, $fb_speed_in ) );
+		$fb_speed_out = max( $allowed_fb_speed_out_min, min( $allowed_fb_speed_out_max, $fb_speed_out ) );
 		
 		// Safely parse include and exclude for use with get_posts().
 		$include = trim( $include );
@@ -216,12 +264,6 @@ class RPS_Image_Gallery {
 		
 		// You can't use include and exclude at the same time, so we'll let exclude trump include.
 		if ( ! empty( $exclude_arr ) && ! empty( $include_arr ) ) $include_arr = array();
-		
-		// determine if fancybox should be loaded if the user wants a slideshow
-		if ( $slideshow ) {
-			$this->print_scripts = true;
-			$str_output .= '<script type="text/javascript">var rps_img_gallery_rel = "' . $group_name . '";</script>';
-		}
 		 
 		$attachments = get_posts( array(
 			'post_type' => 'attachment',
@@ -236,6 +278,22 @@ class RPS_Image_Gallery {
 		) );
 		
 		if ( empty( $attachments ) ) return '';
+		
+		// determine if fancybox should be loaded if the user wants a slideshow
+		// if so, store shortcode information for later use when outputting dynamic javascript
+		// NOTE: We don't have to 
+		if ( $slideshow ) {
+			$this->slideshows[] = compact(
+				'group_name',
+				'fb_title_show',
+				'fb_transition_in',
+				'fb_transition_out',
+				'fb_title_position',
+				'fb_speed_in',
+				'fb_speed_out',
+				'fb_show_close_button'
+			);
+		}
 		
 		$i = 0;
 		$quantity = count( $attachments );
@@ -346,13 +404,40 @@ class RPS_Image_Gallery {
 	}
 	
 	public function cb_footer_styles_scripts () {
-		if ( ! $this->print_scripts ) return;
+		if ( empty( $this->slideshows ) ) return;
+		wp_print_scripts( 'rps-image-gallery-fancybox' );
 		
-		//wp_print_styles( 'rps-image-gallery' );
-		wp_print_scripts( 'rps-image-gallery' );
-	}
+		?>
+		<script type="text/javascript">
+			;jQuery.noConflict();
 	
-	private $print_scripts = false;
+			( function( $, window ) {
+			var document = window.document;
+			$( document ).ready( function() {
+				<?php foreach ( $this->slideshows as $slideshow ) { ?>
+				    $('a[rel="<?php echo $slideshow['group_name']; ?>"]').fancybox({
+				    	'titleShow' : <?php echo ( $slideshow['fb_title_show'] ) ? 'true' : 'false'; ?>,
+						'transitionIn' : '<?php echo $slideshow['fb_transition_in']; ?>',
+						'transitionOut' : '<?php echo $slideshow['fb_transition_out']; ?>',
+						'titlePosition' : '<?php echo $slideshow['fb_title_position']; ?>',
+						'speedIn' : <?php echo $slideshow['fb_speed_in']; ?>,
+						'speedOut' : <?php echo $slideshow['fb_speed_out']; ?>,
+						'showCloseButton' : <?php echo ( $slideshow['fb_show_close_button'] ) ? 'true' : 'false'; ?>,
+						// not editable via shortcode
+						'titleFormat' : function(title, currentArray, currentIndex, currentOpts) {
+							return '<span id="fancybox-title-over">Image ' + (currentIndex + 1) + ' / ' + currentArray.length + (title.length ? ' &nbsp; ' + title : '') + '</span>';
+						},
+						'cyclic' : true,
+						'centerOnScroll' : true
+					});
+				<?php } ?>
+			});
+			
+			} )( jQuery, window );
+		</script>
+	<?php }
+	
+	private $slideshows = array();
 }
 
 if ( ! isset( $rps_image_gallery ) ) $rps_image_gallery = new RPS_Image_Gallery;
