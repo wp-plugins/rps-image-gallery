@@ -99,12 +99,13 @@ fancyBox version 1.3.4 is included with this plugin.
 
 == Changelog ==
 
-= 1.1.1 =
-* First official release version.
-
 = 1.2 =
 * Added capability to pass fancyBox settings through shortcode attributes.
 * Changed the default slideshow behavior to be cyclic (loop).
+* Corrected an issue preventing slideshow for multiple galleries.
+
+= 1.1.1 =
+* First official release version.
 
 == Upgrade Notice ==
 
