@@ -4,7 +4,7 @@ Donate link: http://redpixel.com/
 Tags: gallery, images, slideshow, fancybox
 Requires at least: 3.0
 Tested up to: 3.3.1
-Stable tag: 1.1.1
+Stable tag: 1.2
 
 The RPS Image Gallery plugin takes over where the WordPress gallery leaves off by adding slideshow and advanced linking capabilities.
 
