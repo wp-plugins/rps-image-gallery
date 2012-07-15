@@ -3,7 +3,7 @@
 Plugin Name: RPS Image Gallery
 Plugin URI: http://redpixel.com/
 Description: An image gallery with caption support and ability to link to a slideshow or alternate URL. 
-Version: 1.2.2
+Version: 1.2.3
 Author: Red Pixel Studios
 Author URI: http://redpixel.com/
 License: GPL3
@@ -30,7 +30,7 @@ License: GPL3
  *
  * @package rps-image-gallery
  * @author Red Pixel Studios
- * @version 1.2.2
+ * @version 1.2.3
  */
 
 /**
