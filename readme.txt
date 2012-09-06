@@ -32,6 +32,8 @@ In addition, any image in the gallery can either invoke a slideshow or link to a
 2. Activate the plugin through the "Plugins" menu in WordPress.
 
 == Frequently Asked Questions ==
+= How do I add a gallery? =
+You can refer to the [gallery instructions](http://en.support.wordpress.com/images/gallery/#adding-a-gallery "Adding a Gallery") posted at WordPress.com support.
 
 = What happens if I deactivate the plugin after having setup galleries with it active? =
 
