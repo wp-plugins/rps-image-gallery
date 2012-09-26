@@ -1,6 +1,6 @@
 === RPS Image Gallery ===
 Contributors: redpixelstudios
-Donate link: http://redpixel.com/
+Donate link: http://redpixel.com/donate
 Tags: gallery, images, slideshow, fancybox
 Requires at least: 3.0
 Tested up to: 3.4.2
