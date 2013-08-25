@@ -59,7 +59,7 @@ The fields "Gallery Link URL" and "Gallery Link Target" on the Edit Media screen
 * headingtag (default='h2') - the tag that should be used to wrap the image heading (title).
 * caption (default='false') - whether or not to show the caption under the images in the gallery grid view.
 * slideshow (default='true') - whether or not to invoke the slideshow (fancybox) viewer when an image without a Gallery Link value is clicked.
-* exif_location = (default=null) - where to show the EXIF data associated with the image.
+* exif_locations = (default=null) - where to show the EXIF data associated with the image.
 * exif_fields = (default=null) - what EXIF fields to display and in what order.
 * background_thumbnails = (default = false) - whether to display the gallery thumbnail images as backgrounds or standard images.
 
