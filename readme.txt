@@ -1,2 +1,2 @@
 === RPS Image Gallery ===
-Stable tag: 1.2.25
+Stable tag: 1.2.26
