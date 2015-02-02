@@ -43,7 +43,7 @@ class RPS_Image_Gallery {
 	 *
 	 * @since 1.2.24
 	 */
-	const PLUGIN_VERSION = '1.2.27';
+	const PLUGIN_VERSION = '1.2.28';
 	
 	/**
 	 * The plugin's name for use in printing to the user.
